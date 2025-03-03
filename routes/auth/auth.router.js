@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { signUp } from "../../controller/auth.controller.js";
+import { login, signUp, verifyOtp } from "../../controller/auth.controller.js";
 
 const router = Router()
 
-router.get("/sign-up" ,signUp )
-
-
+router.post("/register" ,signUp ) // -1
+router.post("/register-otp" ,verifyOtp )  // -2
+router.post("/login" ,login )  // -3
 
 
 export {router}
