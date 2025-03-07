@@ -19,9 +19,9 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-
 // Userni vaqtincha saqlab, OTP yuborish
 export const signUp = async (req, res, next) => {
+    
     try {
         const { name, email, password, phonenumber } = req.body;
 
@@ -30,7 +30,10 @@ export const signUp = async (req, res, next) => {
             return res.status(400).json({ message: "Email already exists" });
         }
 
-        const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        const otp = otpGenerator.generate(6, {   digits: true, 
+            upperCaseAlphabets: false, 
+            lowerCaseAlphabets: false, 
+            specialChars: false });
         otpStore.set(email, { otp, expiresAt: Date.now() + 2 * 60 * 1000 }); // 2 daqiqa
         userStore.set(email, { name, email, password, phonenumber });
 
@@ -52,7 +55,7 @@ export const signUp = async (req, res, next) => {
 export const verifyOtp = async (req, res, next) => {
     try {
         const { email, otp } = req.body;
-
+        
         if (!otpStore.has(email) || !userStore.has(email)) {
             return res.status(400).json({ message: "OTP expired or invalid" });
         }
@@ -60,6 +63,7 @@ export const verifyOtp = async (req, res, next) => {
         const storedOtp = otpStore.get(email);
         if (storedOtp.otp !== otp || Date.now() > storedOtp.expiresAt) {
             return res.status(400).json({ message: "Invalid or expired OTP" });
+            
         }
 
         const { name, password, phonenumber } = userStore.get(email);

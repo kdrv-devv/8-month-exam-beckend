@@ -79,3 +79,62 @@ export const getMovieById = async (req, res, next) => {
         next(error);
     }
 };
+
+
+export const chiptaol = async (req, res, next) => {
+    try {
+        // Requestdan ma'lumotlarni olish
+        const { movie_id, chipta_soni } = req.body;
+        
+        if (!movie_id || !chipta_soni || chipta_soni <= 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Movie ID va chipta soni to'g'ri kiritilishi shart" 
+            });
+        }
+
+        // Kinoni bazadan topish
+        const movie = await movieSchemas.findById(movie_id);
+        
+        if (!movie) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Kino topilmadi" 
+            });
+        }
+        
+        // Yetarlicha chipta borligini tekshirish
+        if (!movie.ticket_count || movie.ticket_count < chipta_soni) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Yetarlicha chipta mavjud emas", 
+                mavjud_chipta: movie.ticket_count || 0 
+            });
+        }
+        
+        // Chipta sonini yangilash
+        const yangiChiptaSoni = movie.ticket_count - chipta_soni;
+        
+        // Bazada ma'lumotlarni yangilash
+        const yangilanganKino = await movieSchemas.findByIdAndUpdate(
+            movie_id,
+            { ticket_count: yangiChiptaSoni },
+            { new: true } // Yangilangan ma'lumotni qaytarish uchun
+        );
+        
+        // Muvaffaqiyatli javob qaytarish
+        res.status(200).json({
+            success: true,
+            message: "Chipta muvaffaqiyatli olindi",
+            data: {
+                movie_title: movie.title,
+                olingan_chipta: chipta_soni,
+                qolgan_chipta: yangilanganKino.ticket_count
+            }
+        });
+        
+    } catch (error) {
+        console.error("Chipta olishda xatolik:", error);
+        next(error);
+    }
+};

@@ -10,13 +10,16 @@ const movieSchema = new Schema(
         availableDate: { type: String, required: true }, // Example: "Today", "Tomorrow", "Day after tomorrow"
         availableTime: { type: String }, // Example: "14:30" (only if available today)
         format: { type: String, required: true }, // Example: "2D", "3D", "4D"
-        price: { type: Number, required: true },
-        hallNumber: { type: Number, required: true },
+        price: { type: String, required: true },
+        hallNumber: { type: String, required: true },
         director: { type: String, required: true },
-        duration: { type: Number, required: true }, // in minutes
+        duration: { type: String, required: true }, // in minutes
         country: { type: String, required: true },
-        year: { type: Number, required: true },
-        description: { type: String, required: true }
+        year: { type: String, required: true },
+        description: { type: String, required: true },
+        format:{type :String  , required:false},
+        ticket_count:{type:Number , required:false , default:1}
+
     },
     { versionKey: false }
 );
