@@ -3,4 +3,5 @@ MONGO = "mongodb+srv://ffeodalik:qcY0wzBc1wJX9Eaa@connectdb.6cqbp.mongodb.net/"
 SECRET_KEY = "JUDA_SECRET_KEY"
 
 EMAIL_USER = "ffeodalik@gmail.com"
+
 EMAIL_PASS = "cldi slei wwrv naqt"
